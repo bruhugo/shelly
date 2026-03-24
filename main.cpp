@@ -151,8 +151,10 @@ vector<CMD> getCommands(const vector<token>& tokens){
                 filepath = *(it + 1);
             }
             
-            if (cmd.assignCommandStream(*it, filepath))
+            if (cmd.assignCommandStream(*it, filepath)){
+                ++it;
                 continue; 
+            }
 
             cmd.args.push_back(*it);
         }
@@ -184,13 +186,13 @@ void executeCommands(const vector<CMD>& commands) {
 
     for (int i = 0; i < n; ++i) {
         if (cmds[i].stderr.assigned) {
-            int fd = open((WDIR + cmds[i].stderr.filepath).c_str(),
+            int fd = open((WDIR + "/" + cmds[i].stderr.filepath).c_str(),
                           O_WRONLY | O_CREAT | O_TRUNC, 0644);
             if (fd == -1) { perror("open stderr"); return; }
             cmds[i].stderr.fd = fd;
         }
         if (cmds[i].stdout.assigned) {
-            int fd = open((WDIR + cmds[i].stdout.filepath).c_str(),
+            int fd = open((WDIR + "/" + cmds[i].stdout.filepath).c_str(),
                           O_WRONLY | O_CREAT | O_TRUNC, 0644);
             if (fd == -1) { perror("open stdout"); return; }
             cmds[i].stdout.fd = fd;
